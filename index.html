@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Website für wichtige Informationen</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -37,8 +36,8 @@
         header .marquee span {
             display: inline-block;
             padding-left: 100%;
+            color: lime;
             animation: marquee 15s linear infinite;
-            color: #0f0;
         }
 
         @keyframes marquee {
@@ -56,326 +55,260 @@
         }
 
         .section {
-            background-color: #000;
+            background-color: #222;
             padding: 20px;
             margin: 10px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-            width: 300px; /* Für quadratische Kästchen */
+            flex: 1 1 300px;
+            max-width: 300px; /* Für quadratische Kästchen */
             height: 300px; /* Für quadratische Kästchen */
             overflow: auto; /* Falls der Inhalt größer ist */
+            color: #0f0;
         }
 
         h2 {
             text-align: center;
+            margin-bottom: 10px;
         }
 
-        .calculator, .currency-converter, .countdown, .quote, .stopwatch {
+        .calculator, .currency-converter, .map-section, .weather, .news {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        input, select, button {
+        .map-section {
+            height: 100%;
             width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            font-size: 16px;
-            text-align: center;
-        }
-
-        button {
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            background-color: #0f0;
-            color: #000;
         }
 
         #map {
             height: 100%;
             width: 100%;
+            border-radius: 10px;
         }
 
-        .quote-text {
-            font-size: 18px;
+        button {
+            padding: 10px 15px;
+            background-color: #444;
+            color: #0f0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        input, select {
+            padding: 10px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
             text-align: center;
-            margin-bottom: 10px;
+            width: 80%;
         }
 
-        .stopwatch-display {
-            font-size: 24px;
+        #weather-info, #news-info {
+            max-height: 100px; /* Höhe anpassen, falls der Inhalt zu groß wird */
+            overflow-y: auto;
         }
     </style>
+    <!-- Leaflet CSS für die Karte -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 </head>
 <body>
+    <header>
+        Website für Informationen rund um die Welt
+        <div class="marquee"><span>Willkommen auf der Bibelfratz Website! Diese Seite dient zur Information. Noch nicht alles ist perfekt! :)</span></div>
+    </header>
 
-<header>
-    Website für Informationen rund um die Welt
-    <div class="marquee"><span>Bibelfratz website herzlich willkommen == Diese Website dient zur Information, es ist noch nicht alles perfekt ;)</span></div>
-</header>
-
-<div class="container">
-    <!-- Taschenrechner -->
-    <div id="calculator" class="section">
-        <h2>Taschenrechner</h2>
-        <div class="calculator">
-            <input type="text" id="display" disabled>
-            <div style="display: flex; flex-wrap: wrap; justify-content: center;">
-                <button onclick="appendNumber('7')">7</button>
-                <button onclick="appendNumber('8')">8</button>
-                <button onclick="appendNumber('9')">9</button>
-                <button onclick="chooseOperation('/')">/</button>
-                <button onclick="appendNumber('4')">4</button>
-                <button onclick="appendNumber('5')">5</button>
-                <button onclick="appendNumber('6')">6</button>
-                <button onclick="chooseOperation('*')">*</button>
-                <button onclick="appendNumber('1')">1</button>
-                <button onclick="appendNumber('2')">2</button>
-                <button onclick="appendNumber('3')">3</button>
-                <button onclick="chooseOperation('-')">-</button>
-                <button onclick="appendNumber('0')">0</button>
-                <button onclick="appendNumber('.')">.</button>
-                <button onclick="clearDisplay()">C</button>
-                <button onclick="chooseOperation('+')">+</button>
-                <button onclick="compute()">=</button>
+    <div class="container">
+        <!-- Taschenrechner Sektion -->
+        <div class="section">
+            <h2>Taschenrechner</h2>
+            <div class="calculator">
+                <input type="text" id="display" disabled>
+                <div>
+                    <button onclick="appendNumber('7')">7</button>
+                    <button onclick="appendNumber('8')">8</button>
+                    <button onclick="appendNumber('9')">9</button>
+                    <button onclick="chooseOperation('/')">/</button><br>
+                    <button onclick="appendNumber('4')">4</button>
+                    <button onclick="appendNumber('5')">5</button>
+                    <button onclick="appendNumber('6')">6</button>
+                    <button onclick="chooseOperation('*')">*</button><br>
+                    <button onclick="appendNumber('1')">1</button>
+                    <button onclick="appendNumber('2')">2</button>
+                    <button onclick="appendNumber('3')">3</button>
+                    <button onclick="chooseOperation('-')">-</button><br>
+                    <button onclick="appendNumber('0')">0</button>
+                    <button onclick="appendNumber('.')">.</button>
+                    <button onclick="clearDisplay()">C</button>
+                    <button onclick="chooseOperation('+')">+</button><br>
+                    <button onclick="compute()">=</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Währungsumrechner -->
-    <div id="currency-converter" class="section">
-        <h2>Währungsumrechner</h2>
-        <div class="currency-converter">
-            <input type="number" id="amount" placeholder="Betrag">
-            <select id="currency">
-                <option value="usdToEur">USD zu EUR</option>
-                <option value="eurToUsd">EUR zu USD</option>
-            </select>
-            <button onclick="convertCurrency()">Umrechnen</button>
-            <input type="text" id="result" disabled>
+        <!-- Währungsumrechner Sektion -->
+        <div class="section">
+            <h2>Währungsumrechner</h2>
+            <div class="currency-converter">
+                <input type="number" id="amount" placeholder="Betrag">
+                <select id="currency">
+                    <option value="usdToEur">USD zu EUR</option>
+                    <option value="eurToUsd">EUR zu USD</option>
+                </select>
+                <button onclick="convertCurrency()">Umrechnen</button>
+                <input type="text" id="result" disabled>
+            </div>
+        </div>
+
+        <!-- Wettervorhersage Sektion -->
+        <div class="section">
+            <h2>Wettervorhersage</h2>
+            <div id="weather-info">Lädt Wetterdaten...</div>
+        </div>
+
+        <!-- Nachrichten Sektion -->
+        <div class="section">
+            <h2>Nachrichten</h2>
+            <div id="news-info">Lädt Nachrichten...</div>
+        </div>
+
+        <!-- Karten Sektion -->
+        <div class="section map-section">
+            <h2>Dein Standort</h2>
+            <div id="map"></div>
         </div>
     </div>
 
-    <!-- Karte -->
-    <div id="map-section" class="section">
-        <h2>Karte</h2>
-        <div id="map"></div>
-    </div>
+    <!-- Leaflet JavaScript für die Karte -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Taschenrechner Logik
+        let currentOperation = '';
+        let previousValue = '';
+        let currentValue = '';
 
-    <!-- Wettervorhersage -->
-    <div id="weather" class="section">
-        <h2>Wettervorhersage</h2>
-        <div id="weather-info">Lädt Wetterdaten...</div>
-    </div>
-
-    <!-- Nachrichten -->
-    <div id="news" class="section">
-        <h2>Nachrichten</h2>
-        <div id="news-info">Lädt Nachrichten...</div>
-    </div>
-
-    <!-- Countdown-Timer -->
-    <div id="countdown" class="section">
-        <h2>Countdown-Timer</h2>
-        <div class="countdown">
-            <input type="datetime-local" id="countdown-date">
-            <button onclick="startCountdown()">Start Countdown</button>
-            <p id="countdown-display"></p>
-        </div>
-    </div>
-
-    <!-- Zufällige Zitate -->
-    <div id="quote" class="section">
-        <h2>Zufällige Zitate</h2>
-        <div class="quote">
-            <p class="quote-text" id="random-quote">Lädt Zitate...</p>
-            <button onclick="generateQuote()">Neues Zitat</button>
-        </div>
-    </div>
-
-    <!-- Stoppuhr -->
-    <div id="stopwatch" class="section">
-        <h2>Stoppuhr</h2>
-        <div class="stopwatch">
-            <p class="stopwatch-display" id="stopwatch-display">00:00:00</p>
-            <button onclick="startStopwatch()">Start</button>
-            <button onclick="stopStopwatch()">Stop</button>
-            <button onclick="resetStopwatch()">Reset</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Taschenrechner
-    let currentOperation = '';
-    let previousValue = '';
-    let currentValue = '';
-
-    function appendNumber(number) {
-        currentValue += number;
-        updateDisplay();
-    }
-
-    function chooseOperation(operation) {
-        if (currentValue === '') return;
-        if (previousValue !== '') {
-            compute();
+        function appendNumber(number) {
+            currentValue += number;
+            updateDisplay();
         }
-        currentOperation = operation;
-        previousValue = currentValue;
-        currentValue = '';
-    }
 
-    function compute() {
-        let result;
-        const prev = parseFloat(previousValue);
-        const current = parseFloat(currentValue);
-        if (isNaN(prev) || isNaN(current)) return;
-        switch (currentOperation) {
-            case '+':
-                result = prev + current;
-                break;
-            case '-':
-                result = prev - current;
-                break;
-            case '*':
-                result = prev * current;
-                break;
-            case '/':
-                result = prev / current;
-                break;
-            default:
-                return;
-        }
-        currentValue = result;
-        currentOperation = '';
-        previousValue = '';
-        updateDisplay();
-    }
-
-    function updateDisplay() {
-        document.getElementById('display').value = currentValue;
-    }
-
-    function clearDisplay() {
-        currentValue = '';
-        previousValue = '';
-        currentOperation = '';
-        updateDisplay();
-    }
-
-    // Währungsumrechner
-    function convertCurrency() {
-        const amount = document.getElementById('amount').value;
-        const currency = document.getElementById('currency').value;
-        let result;
-        if (currency === 'usdToEur') {
-            result = amount * 0.85;
-        } else if (currency === 'eurToUsd') {
-            result = amount * 1.18;
-        }
-        document.getElementById('result').value = result.toFixed(2);
-    }
-
-    // Countdown-Timer
-    let countdownInterval;
-    function startCountdown() {
-        const targetDate = new Date(document.getElementById('countdown-date').value).getTime();
-        countdownInterval = setInterval(() => {
-            const now = new Date().getTime();
-            const distance = targetDate - now;
-            if (distance < 0) {
-                clearInterval(countdownInterval);
-                document.getElementById('countdown-display').textContent = 'Zeit abgelaufen!';
-                return;
+        function chooseOperation(operation) {
+            if (currentValue === '') return;
+            if (previousValue !== '') {
+                compute();
             }
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            document.getElementById('countdown-display').textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-        }, 1000);
-    }
+            currentOperation = operation;
+            previousValue = currentValue;
+            currentValue = '';
+        }
 
-    // Zufällige Zitate
-    const quotes = [
-        "Der beste Weg, die Zukunft vorherzusagen, ist, sie zu erfinden.",
-        "Leben ist das, was passiert, während du beschäftigt bist, andere Pläne zu machen.",
-        "Erfolg ist nicht der Schlüssel zum Glück, Glück ist der Schlüssel zum Erfolg."
-    ];
+        function compute() {
+            let result;
+            const prev = parseFloat(previousValue);
+            const current = parseFloat(currentValue);
+            if (isNaN(prev) || isNaN(current)) return;
+            switch (currentOperation) {
+                case '+':
+                    result = prev + current;
+                    break;
+                case '-':
+                    result = prev - current;
+                    break;
+                case '*':
+                    result = prev * current;
+                    break;
+                case '/':
+                    result = prev / current;
+                    break;
+                default:
+                    return;
+            }
+            currentValue = result;
+            currentOperation = '';
+            previousValue = '';
+            updateDisplay();
+        }
 
-    function generateQuote() {
-        const randomIndex = Math.floor(Math.random() * quotes.length);
-        document.getElementById('random-quote').textContent = quotes[randomIndex];
-    }
+        function updateDisplay() {
+            document.getElementById('display').value = currentValue;
+        }
 
-    // Stoppuhr
-    let stopwatchInterval;
-    let elapsedTime = 0;
+        function clearDisplay() {
+            currentValue = '';
+            previousValue = '';
+            currentOperation = '';
+            updateDisplay();
+        }
 
-    function startStopwatch() {
-        const startTime = Date.now() - elapsedTime;
-        stopwatchInterval = setInterval(() => {
-            elapsedTime = Date.now() - startTime;
-            const hours = Math.floor(elapsedTime / (1000 * 60 * 60));
-            const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
-            document.getElementById('stopwatch-display').textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        }, 1000);
-    }
+        // Währungsumrechner Logik
+        function convertCurrency() {
+            const amount = document.getElementById('amount').value;
+            const currency = document.getElementById('currency').value;
+            let result;
+            if (currency === 'usdToEur') {
+                result = amount * 0.85;
+            } else if (currency === 'eurToUsd') {
+                result = amount * 1.18;
+            }
+            document.getElementById('result').value = result.toFixed(2);
+        }
 
-    function stopStopwatch() {
-        clearInterval(stopwatchInterval);
-    }
-
-    function resetStopwatch() {
-        clearInterval(stopwatchInterval);
-        elapsedTime = 0;
-        document.getElementById('stopwatch-display').textContent = '00:00:00';
-    }
-
-    // Wettervorhersage
-    const weatherApiKey = 'ff3bbde78697d4f25806c0cb48b84bb1';
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=Berlin&units=metric&appid=${weatherApiKey}`)
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('weather-info').textContent = `${data.name}: ${data.weather[0].description}, ${data.main.temp}°C`;
-        })
-        .catch(err => {
-            document.getElementById('weather-info').textContent = 'Wetterdaten konnten nicht geladen werden.';
-        });
-
-    // Nachrichten
-    const newsApiKey = '25fe4fd728414dc686b5e274f3fd826e';
-    fetch(`https://newsapi.org/v2/top-headlines?country=de&apiKey=${newsApiKey}`)
-        .then(response => response.json())
-        .then(data => {
-            let newsHtml = '';
-            data.articles.slice(0, 3).forEach(article => {
-                newsHtml += `<h3>${article.title}</h3><p>${article.description}</p>`;
+        // Wettervorhersage
+        const weatherApiKey = 'ff3bbde78697d4f25806c0cb48b84bb1';
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=Berlin&units=metric&appid=${weatherApiKey}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('weather-info').textContent = `${data.name}: ${data.weather[0].description}, ${data.main.temp}°C`;
+            })
+            .catch(err => {
+                document.getElementById('weather-info').textContent = 'Wetterdaten konnten nicht geladen werden.';
             });
-            document.getElementById('news-info').innerHTML = newsHtml;
-        })
-        .catch(err => {
-            document.getElementById('news-info').textContent = 'Nachrichten konnten nicht geladen werden.';
-        });
 
-    // Karte
-    function initMap() {
-        const map = L.map('map').setView([52.52, 13.405], 13); // Koordinaten für Berlin
+        // Nachrichten
+        const newsApiKey = '25fe4fd728414dc686b5e274f3fd826e';
+        fetch(`https://newsapi.org/v2/top-headlines?country=de&apiKey=${newsApiKey}`)
+            .then(response => response.json())
+            .then(data => {
+                let newsHtml = '';
+                data.articles.slice(0, 3).forEach(article => {
+                    newsHtml += `<h3>${article.title}</h3><p>${article.description}</p>`;
+                });
+                document.getElementById('news-info').innerHTML = newsHtml;
+            })
+            .catch(err => {
+                document.getElementById('news-info').textContent = 'Nachrichten konnten nicht geladen werden.';
+            });
+
+        // Leaflet-Karte
+        const map = L.map('map').setView([51.505, -0.09], 13); // Standard Standort
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        L.marker([52.52, 13.405]).addTo(map)
-            .bindPopup('Hier ist Berlin!')
-            .openPopup();
-    }
+        function onLocationFound(e) {
+            const radius = e.accuracy;
+            L.marker(e.latlng).addTo(map)
+                .bindPopup("Du bist innerhalb von " + radius + " Metern hier").openPopup();
+            L.circle(e.latlng, radius).addTo(map);
+        }
 
-    document.addEventListener('DOMContentLoaded', initMap);
-</script>
+        function onLocationError(e) {
+            alert(e.message);
+        }
 
+        map.on('locationfound', onLocationFound);
+        map.on('locationerror', onLocationError);
+
+        map.locate({ setView: true, maxZoom: 16 }); // Versucht, den aktuellen Standort zu finden
+    </script>
 </body>
 </html>
