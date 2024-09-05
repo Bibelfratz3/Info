@@ -6,95 +6,105 @@
     <title>Informationswebsite</title>
     <style>
         body {
-            font-family: 'Courier New', Courier, monospace;
+            font-family: Arial, sans-serif;
             background-color: #000;
-            color: #00ff00;
+            color: #0f0;
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+
         header {
             width: 100%;
-            background-color: #001f00;
-            color: #00ff00;
+            background-color: #111;
+            color: #0f0;
             text-align: center;
             padding: 20px 0;
             font-size: 24px;
             position: relative;
+            border-bottom: 2px solid #0f0;
         }
-        header .marquee {
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .section {
+            background-color: #111;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            flex: 1 1 300px;
+            max-width: 300px;
+            min-height: 200px;
+            border: 2px solid #0f0;
+        }
+
+        .section h2 {
+            margin-top: 0;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .marquee {
             position: absolute;
             width: 100%;
             overflow: hidden;
             white-space: nowrap;
-            bottom: 0;
         }
-        header .marquee span {
+
+        .marquee span {
             display: inline-block;
             padding-left: 100%;
             animation: marquee 15s linear infinite;
-            color: #00ff00;
+            color: #0f0;
         }
+
         @keyframes marquee {
             0% { transform: translateX(0%); }
             100% { transform: translateX(-100%); }
         }
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 20px 0;
+
+        .calculator, .currency-converter, .world-clock, .weather, .news {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
+            flex-direction: column;
+            align-items: center;
         }
-        .section {
-            background-color: #002200;
-            padding: 20px;
-            margin: 10px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.1);
-            flex: 1 1 300px;
-            max-width: 500px;
-        }
-        .section h2 {
-            margin-top: 0;
-            font-size: 20px;
-            text-align: center;
-            color: #00ff00;
-        }
+
         input, select, button {
-            width: 100%;
             padding: 10px;
             margin: 5px 0;
-            font-size: 18px;
-            text-align: center;
-            border: 1px solid #00ff00;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 16px;
+            background-color: #222;
+            color: #0f0;
+            border: 1px solid #0f0;
             border-radius: 5px;
-            background-color: #001f00;
-            color: #00ff00;
         }
+
         button {
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            background-color: #0f0;
+            color: #000;
+            font-weight: bold;
         }
+
         button:hover {
-            background-color: #00ff00;
-            color: #001f00;
-        }
-        .moon-phase img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background-color: #000;
+            background-color: #00ff00b3;
         }
     </style>
 </head>
 <body>
     <header>
         Informationswebsite
-        <div class="marquee"><span>Willkommen auf unserer Informationswebsite! Bleiben Sie informiert.</span></div>
+        <div class="marquee"><span>Willkommen auf unserer Informationswebsite - Hier finden Sie aktuelle Nachrichten, Wettervorhersagen und mehr!</span></div>
     </header>
 
     <div class="container">
@@ -103,14 +113,14 @@
             <h2>Taschenrechner</h2>
             <div class="calculator">
                 <input type="text" id="display" disabled>
-                <div style="display: flex; flex-wrap: wrap; justify-content: center;">
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
                     <button onclick="appendNumber('7')">7</button>
                     <button onclick="appendNumber('8')">8</button>
                     <button onclick="appendNumber('9')">9</button>
                     <button onclick="chooseOperation('/')">/</button>
                     <button onclick="appendNumber('4')">4</button>
                     <button onclick="appendNumber('5')">5</button>
-                    <button onclick="appendNumber('6')">6</button>
+                    <button onclick="appendNumber('6')">*</button>
                     <button onclick="chooseOperation('*')">*</button>
                     <button onclick="appendNumber('1')">1</button>
                     <button onclick="appendNumber('2')">2</button>
@@ -125,207 +135,83 @@
             </div>
         </div>
 
-        <!-- Währungsumrechner Sektion -->
-        <div id="currency-converter" class="section">
-            <h2>Währungsumrechner</h2>
-            <input type="number" id="amount" placeholder="Betrag">
-            <select id="currency">
-                <option value="usdToEur">USD zu EUR</option>
-                <option value="eurToUsd">EUR zu USD</option>
-            </select>
-            <button onclick="convertCurrency()">Umrechnen</button>
-            <input type="text" id="result" disabled>
-        </div>
-
-        <!-- Weltzeituhr Sektion -->
-        <div id="world-clock" class="section">
-            <h2>Weltzeituhr</h2>
-            <select id="timezone">
-                <option value="-9">Anchorage (GMT-09:00)</option>
-                <option value="-8">Los Angeles (GMT-08:00)</option>
-                <option value="-7">Denver (GMT-07:00)</option>
-                <option value="-6">Chicago (GMT-06:00)</option>
-                <option value="-5">New York (GMT-05:00)</option>
-                <option value="0">London (GMT+00:00)</option>
-                <option value="1">Paris (GMT+01:00)</option>
-                <option value="2">Berlin (GMT+02:00)</option>
-                <option value="9">Tokyo (GMT+09:00)</option>
-                <option value="10">Sydney (GMT+10:00)</option>
-            </select>
-            <button onclick="showTime()">Zeitzone anzeigen</button>
-            <input type="text" id="clock" disabled placeholder="Uhrzeit">
-        </div>
-
-        <!-- Mondzyklus Sektion -->
-        <div id="moon-phase" class="section">
-            <h2>Mondzyklus</h2>
-            <div class="moon-phase">
-                <img id="moon-image" src="https://github.com/Bibelfratz1/Information.com/raw/main/new_moon.png" alt="Mondphase">
-            </div>
-            <p id="moon-phase-text"></p>
-        </div>
-
         <!-- Wettervorhersage Sektion -->
         <div id="weather" class="section">
             <h2>Wettervorhersage</h2>
-            <input type="text" id="city" placeholder="Stadt eingeben">
-            <button onclick="getWeather()">Wetter anzeigen</button>
-            <div id="weather-info"></div>
+            <div class="weather">
+                <input type="text" id="city" placeholder="Stadt eingeben">
+                <button onclick="getWeather()">Wetter anzeigen</button>
+                <div id="weather-result"></div>
+            </div>
         </div>
 
-        <!-- News Feed Sektion -->
-        <div id="news-feed" class="section">
+        <!-- Nachrichten Sektion -->
+        <div id="news" class="section">
             <h2>Aktuelle Nachrichten</h2>
-            <div id="news-articles"></div>
+            <div class="news">
+                <button onclick="getNews()">Nachrichten anzeigen</button>
+                <div id="news-result"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        const weatherApiKey = 'ff3bbde78697d4f25806c0cb48b84bb1';
-        const newsApiKey = '25fe4fd728414dc686b5e274f3fd826e';
-
+        // Taschenrechner Funktionen
         let currentOperation = '';
-        let previousValue = '';
         let currentValue = '';
 
         function appendNumber(number) {
-            currentValue += number;
-            updateDisplay();
+            document.getElementById('display').value += number;
         }
 
         function chooseOperation(operation) {
-            if (currentValue === '') return;
-            if (previousValue !== '') {
-                compute();
-            }
             currentOperation = operation;
-            previousValue = currentValue;
-            currentValue = '';
+            currentValue = document.getElementById('display').value;
+            document.getElementById('display').value = '';
         }
 
         function compute() {
-            let result;
-            const prev = parseFloat(previousValue);
-            const current = parseFloat(currentValue);
-            if (isNaN(prev) || isNaN(current)) return;
-            switch (currentOperation) {
-                case '+':
-                    result = prev + current;
-                    break;
-                case '-':
-                    result = prev - current;
-                    break;
-                case '*':
-                    result = prev * current;
-                    break;
-                case '/':
-                    result = prev / current;
-                    break;
-                default:
-                    return;
-            }
-            currentValue = result;
-            currentOperation = '';
-            previousValue = '';
-            updateDisplay();
-        }
-
-        function updateDisplay() {
-            document.getElementById('display').value = currentValue;
+            let result = eval(currentValue + currentOperation + document.getElementById('display').value);
+            document.getElementById('display').value = result;
         }
 
         function clearDisplay() {
-            currentValue = '';
-            previousValue = '';
+            document.getElementById('display').value = '';
             currentOperation = '';
-            updateDisplay();
+            currentValue = '';
         }
 
-        function convertCurrency() {
-            const amount = document.getElementById('amount').value;
-            const currency = document.getElementById('currency').value;
-            let result;
-            if (currency === 'usdToEur') {
-                result = amount * 0.85;
-            } else {
-                result = amount / 0.85;
-            }
-            document.getElementById('result').value = result.toFixed(2);
-        }
-
-        function showTime() {
-            const timezone = document.getElementById('timezone').value;
-            let time = new Date();
-            const offset = timezone * 60 * 60 * 1000;
-            time = new Date(time.getTime() + offset);
-            const hours = time.getUTCHours().toString().padStart(2, '0');
-            const minutes = time.getUTCMinutes().toString().padStart(2, '0');
-            const seconds = time.getUTCSeconds().toString().padStart(2, '0');
-            document.getElementById('clock').value = `${hours}:${minutes}:${seconds}`;
-        }
-
-        function getWeather() {
+        // Wettervorhersage API
+        async function getWeather() {
+            const apiKey = 'ff3bbde78697d4f25806c0cb48b84bb1';
             const city = document.getElementById('city').value;
-            if (!city) {
-                alert('Bitte geben Sie eine Stadt ein.');
-                return;
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=de`;
+
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (data.cod === 200) {
+                document.getElementById('weather-result').innerHTML = `Wetter in ${data.name}: ${data.weather[0].description}, ${data.main.temp}°C`;
+            } else {
+                document.getElementById('weather-result').innerHTML = 'Stadt nicht gefunden.';
             }
-            fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${weatherApiKey}&units=metric&lang=de`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.cod === '404') {
-                        document.getElementById('weather-info').innerHTML = 'Stadt nicht gefunden.';
-                        return;
-                    }
-                    const weatherInfo = `
-                        <h3>${data.name}</h3>
-                        <p>Temperatur: ${data.main.temp} °C</p>
-                        <p>Wetter: ${data.weather[0].description}</p>
-                        <p>Luftfeuchtigkeit: ${data.main.humidity} %</p>
-                        <p>Windgeschwindigkeit: ${data.wind.speed} m/s</p>
-                    `;
-                    document.getElementById('weather-info').innerHTML = weatherInfo;
-                })
-                .catch(error => {
-                    document.getElementById('weather-info').innerHTML = 'Fehler beim Abrufen der Wetterdaten.';
-                    console.error('Fehler:', error);
-                });
         }
 
-        function loadNews() {
-            fetch(`https://newsapi.org/v2/top-headlines?country=de&apiKey=${newsApiKey}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status !== 'ok') {
-                        document.getElementById('news-articles').innerHTML = 'Fehler beim Abrufen der Nachrichten.';
-                        return;
-                    }
-                    const articles = data.articles.map(article => `
-                        <div>
-                            <h3><a href="${article.url}" target="_blank">${article.title}</a></h3>
-                            <p>${article.description}</p>
-                        </div>
-                    `).join('');
-                    document.getElementById('news-articles').innerHTML = articles;
-                })
-                .catch(error => {
-                    document.getElementById('news-articles').innerHTML = 'Fehler beim Abrufen der Nachrichten.';
-                    console.error('Fehler:', error);
-                });
-        }
+        // Nachrichten API
+        async function getNews() {
+            const apiKey = '25fe4fd728414dc686b5e274f3fd826e';
+            const url = `https://newsapi.org/v2/top-headlines?country=de&apiKey=${apiKey}`;
 
-        function updateMoonPhase() {
-            const moonImage = document.getElementById('moon-image');
-            const moonPhaseText = document.getElementById('moon-phase-text');
-            // Dummy logic for moon phase
-            moonImage.src = 'https://github.com/Bibelfratz1/Information.com/raw/main/new_moon.png';
-            moonPhaseText.textContent = 'Neumond';
-        }
+            const response = await fetch(url);
+            const data = await response.json();
 
-        window.onload = () => {
-            updateMoonPhase();
-            loadNews();
-        };
+            let newsHTML = '';
+            data.articles.forEach(article => {
+                newsHTML += `<p><strong>${article.title}</strong><br>${article.description}</p>`;
+            });
+
+            document.getElementById('news-result').innerHTML = newsHTML;
+        }
     </script>
 </body>
 </html>
