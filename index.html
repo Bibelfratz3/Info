@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Website für wichtige Informationen</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -60,15 +61,16 @@
             margin: 10px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-            flex: 1 1 300px;
-            max-width: 500px;
+            width: 300px; /* Für quadratische Kästchen */
+            height: 300px; /* Für quadratische Kästchen */
+            overflow: auto; /* Falls der Inhalt größer ist */
         }
 
         h2 {
             text-align: center;
         }
 
-        .calculator, .world-clock, .currency-converter, .countdown, .quote, .stopwatch {
+        .calculator, .currency-converter, .countdown, .quote, .stopwatch {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -78,7 +80,7 @@
             width: 100%;
             padding: 10px;
             margin: 5px 0;
-            font-size: 18px;
+            font-size: 16px;
             text-align: center;
         }
 
@@ -90,25 +92,19 @@
             color: #000;
         }
 
-        .map {
-            height: 300px;
-            width: 100%;
-        }
-
-        /* Wetter, Nachrichten, Karte */
         #map {
-            height: 300px;
+            height: 100%;
             width: 100%;
         }
 
         .quote-text {
-            font-size: 20px;
+            font-size: 18px;
             text-align: center;
             margin-bottom: 10px;
         }
 
         .stopwatch-display {
-            font-size: 32px;
+            font-size: 24px;
         }
     </style>
 </head>
@@ -161,7 +157,7 @@
         </div>
     </div>
 
-    <!-- Weltkarte -->
+    <!-- Karte -->
     <div id="map-section" class="section">
         <h2>Karte</h2>
         <div id="map"></div>
@@ -286,23 +282,18 @@
     let countdownInterval;
     function startCountdown() {
         const targetDate = new Date(document.getElementById('countdown-date').value).getTime();
-        if (isNaN(targetDate)) return;
-
         countdownInterval = setInterval(() => {
             const now = new Date().getTime();
             const distance = targetDate - now;
-
             if (distance < 0) {
                 clearInterval(countdownInterval);
                 document.getElementById('countdown-display').textContent = 'Zeit abgelaufen!';
                 return;
             }
-
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
             document.getElementById('countdown-display').textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
         }, 1000);
     }
@@ -330,7 +321,6 @@
             const hours = Math.floor(elapsedTime / (1000 * 60 * 60));
             const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
-
             document.getElementById('stopwatch-display').textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }, 1000);
     }
@@ -371,16 +361,21 @@
             document.getElementById('news-info').textContent = 'Nachrichten konnten nicht geladen werden.';
         });
 
-    // Karte (Google Maps API kann hier verwendet werden)
+    // Karte
     function initMap() {
-        const map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 8,
-            center: { lat: 52.52, lng: 13.405 }
-        });
+        const map = L.map('map').setView([52.52, 13.405], 13); // Koordinaten für Berlin
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        L.marker([52.52, 13.405]).addTo(map)
+            .bindPopup('Hier ist Berlin!')
+            .openPopup();
     }
 
+    document.addEventListener('DOMContentLoaded', initMap);
 </script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap"></script>
 
 </body>
 </html>
